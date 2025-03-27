@@ -1,33 +1,30 @@
 package com.test.BasicAuth.controller;
 
-import com.test.BasicAuth.entity.User;
+import com.test.BasicAuth.entities.Users;
 import com.test.BasicAuth.service.UserService;
-import org.antlr.v4.runtime.misc.IntegerList;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth/api")
+@RequestMapping("/api")
+@EntityScan("com.test.BasicAuth.entities")
+@AllArgsConstructor
 public class Controller {
 
-    @Autowired
-    UserService userService;
-
-    @GetMapping
-    public String normalApi(){
-        return "Hello, I am an api";
-    }
+    private final UserService userService;
 
     @PostMapping
     public String normalPostApi(@RequestBody Map<String, String> person){
         return userService.checkUser(person.get("name"));
     }
 
-    @PostMapping("/save")
-    public User saveApi(@RequestBody Map<String, String> person){
-        return userService.saveUser(person.get("name"), person.get("password"), Integer.parseInt(person.get("id")));
+    @PostMapping("/signup")
+    public Users saveApi(@RequestBody Users person){
+        return userService.saveUser(person);
     }
 
 }

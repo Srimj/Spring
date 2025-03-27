@@ -1,29 +1,30 @@
 package com.test.BasicAuth.service;
 
-import com.test.BasicAuth.entity.User;
+import com.test.BasicAuth.entities.Users;
 import com.test.BasicAuth.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
+@Transactional
 public class UserService {
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public String checkUser(String username) {
-        User checkUser = this.userRepository.findByName(username);
+        Users checkUser = userRepository.findByName(username);
         if (checkUser != null && !checkUser.getName().isEmpty()) {
             return "Welcome " + checkUser.getName();
         }
         return "User name not found";
     }
 
-    public User saveUser(String name, String pass, int id){
-        User user = new User();
-        user.setId(id);
-        user.setName(name);
-        user.setPassword(pass);
+    public Users saveUser(Users inputUser){
+        Users user = Users.builder()
+                .id(inputUser.getId())
+                .name(inputUser.getName())
+                .password(inputUser.getPassword()).build();
         return userRepository.save(user);
     }
 }
